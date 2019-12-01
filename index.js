@@ -27,4 +27,6 @@ if (Math.floor(day) !== day)
 if (!fs.existsSync(`./days/${day}`))
     error('Directory ./' + day + ' does not exist', 'Try creating it maybe?');
 
-console.log(require(`./days/${day}/index.js`).run());
+for (part of require(`./days/${day}/index.js`)) {
+    console.log(part());
+}
