@@ -1,6 +1,5 @@
 const common = require('../../common');
 let input = common.readInput('./days/3/input.txt').split('\n').map(x => x.split(','));
-console.log(input);
 let positions = [];
 function part1() {
     input.forEach(instructions => {
@@ -37,4 +36,42 @@ function part1() {
     
 }
 
-module.exports = [part1]
+function part2() {
+    function getPoints(instructions) {
+        let points = {};
+        let position = [0, 0];
+        let Steps = 0;
+        instructions.forEach((instruction, index) => {
+            for (let i = 0; i < +instruction.slice(1); i++ ) {
+                switch (instruction.slice(0, 1)) {
+                    case 'U': position[1] ++; break;
+                    case 'D': position[1] --; break;
+                    case 'R': position[0] ++; break;
+                    case 'L': position[0] --; break;
+                }
+                Steps++;
+                points[position] = Steps;
+            }
+            
+        })
+        return points;
+    }
+    // Get all coordinates visited from each of the wires
+    let [wireOnePoints, wireTwoPoints] = [getPoints(input[0]), getPoints(input[1])];
+    // Find intersections by using the coordnates keys
+    let allCoordinates = [...Object.keys(wireOnePoints), ...Object.keys(wireTwoPoints)];
+    allCoordinates.splice(allCoordinates.indexOf('0,0'), 1);
+    // return only duplicate intersections aka intersections
+    let intersectionCoordinates = []
+    for (let i = 0; i < allCoordinates.length; i++) {
+        if (allCoordinates.indexOf(allCoordinates[i]) < i) intersectionCoordinates.push(allCoordinates[i]);
+    }
+    console.log(intersectionCoordinates)
+    // Map the coordinates of intersections into number of steps travelled to that intersection
+    // The lowest number of steps to get to it is returned
+    let intersectionStepss = intersectionCoordinates.map(item => wireOnePoints[item] + wireTwoPoints[item]);
+    // Sort for the lowest Steps
+    return intersectionStepss.sort((a,b) => a-b)[0];
+}
+
+module.exports = [part1, part2]
